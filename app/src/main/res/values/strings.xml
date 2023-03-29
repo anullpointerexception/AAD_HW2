@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">Magic Card List</string>
+    <string name="json_data"/>
+    <string name="lbl_btn_load">Load Data</string>
+</resources>
