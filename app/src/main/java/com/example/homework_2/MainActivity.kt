@@ -22,13 +22,13 @@ class MainActivity : AppCompatActivity() {
 
 
     fun loadData(view: View){
-        !findViewById<Button>(R.id.loadData).isClickable
-        !findViewById<Button>(R.id.loadData).isEnabled
+        val loadButton = findViewById<Button>(R.id.loadData)
+        loadButton.isEnabled = false
+        loadButton.alpha = 0.5f
         findViewById<TextView>(R.id.dataTextView).text = ""
         lifecycleScope.launch{
             val result = withContext(Dispatchers.IO){
                 connection.loadCardData(page)
-
             }
             withContext(Dispatchers.Main){
                 val string = StringBuilder()
@@ -64,8 +64,8 @@ class MainActivity : AppCompatActivity() {
                 }
                 findViewById<TextView>(R.id.dataTextView).text = string
                 page++
-                findViewById<Button>(R.id.loadData).isClickable
-                findViewById<Button>(R.id.loadData).isEnabled
+                loadButton.isEnabled = true
+                loadButton.alpha = 1.0f
             }
         }
 
