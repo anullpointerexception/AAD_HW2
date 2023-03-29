@@ -12,8 +12,8 @@ class HttpConnector {
 
     // Load data from magic api
     fun loadCardData(page: Int): List<Card> {
-        println("Current page: $page ")
-        val url = URL("https://api.magicthegathering.io/v1/cards?page=0")
+
+        val url = URL("https://api.magicthegathering.io/v1/cards?page=$page")
         val connection = url.openConnection() as HttpURLConnection
         val result = try{
             connection.run{
@@ -28,15 +28,9 @@ class HttpConnector {
         val gson = Gson()
         val jsonObject = gson.fromJson(result, JsonObject::class.java)
         val cardJsonArray = jsonObject.getAsJsonArray("cards")
-        println("31 Line $cardJsonArray")
         val currentCards = mutableListOf<Card>()
         for(currentCardElement in cardJsonArray){
-            val cardJsonObject = currentCardElement.asJsonObject
-            val card : Card = Card(
-                cardJsonObject.get("name").asString,
-                cardJsonObject.get("manaCost").asString,
-                cardJsonObject.get("cmc").asLong
-            )
+            val card = gson.fromJson(currentCardElement, Card::class.java)
             currentCards.add(card)
         }
         return currentCards
