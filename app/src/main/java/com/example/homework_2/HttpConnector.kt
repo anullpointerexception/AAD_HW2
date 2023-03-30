@@ -3,9 +3,6 @@ package com.example.homework_2
 import com.example.homework_2.models.Card
 import com.example.homework_2.models.ForeignName
 import com.example.homework_2.models.Legalities
-import com.google.gson.Gson
-import com.google.gson.JsonArray
-import com.google.gson.JsonObject
 import org.json.JSONArray
 import org.json.JSONObject
 import java.net.HttpURLConnection
