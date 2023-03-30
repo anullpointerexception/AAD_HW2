@@ -7,5 +7,5 @@ data class ForeignName(
     val flavor: String,
     val imageUrl: String,
     val language: String,
-    val multiverseid: Long
+    val multiverseid: String
 )
