@@ -11,11 +11,11 @@ import java.net.URL
 class HttpConnector {
 
     // Load data from magic api
-    fun loadCardData(page: Int): List<Card> {
+    fun loadCardData(page: Int): List<Card>? {
 
         val url = URL("https://api.magicthegathering.io/v1/cards?page=$page")
         val connection = url.openConnection() as HttpURLConnection
-        var result = ""
+        var result: String
         try{
             connection.run{
                 requestMethod = "GET"
@@ -24,28 +24,29 @@ class HttpConnector {
             }
         }
         catch (e: Exception) {
-            result = "text"
+            return null
         }finally {
             connection.disconnect()
         }
+        val currentCards = mutableListOf<Card>()
+
         val jsonObject = JSONObject(result)
 
         val cardJsonArray = jsonObject.getJSONArray("cards")
-        val currentCards = mutableListOf<Card>()
-        for(i in 0 until cardJsonArray.length()){
+        for(i in 0 until cardJsonArray.length()) {
             val currentCardElement = cardJsonArray.getJSONObject(i)
             // colors
-            val colorsJson =currentCardElement.optJSONArray("colors") ?: JSONArray()
-            val colors = (0 until colorsJson.length()).map {colorsJson.getString(it)}
+            val colorsJson = currentCardElement.optJSONArray("colors") ?: JSONArray()
+            val colors = (0 until colorsJson.length()).map { colorsJson.getString(it) }
             // colorIdentity
             val colorIdentityJson = currentCardElement.optJSONArray("colorIdentity") ?: JSONArray()
-            val colorIdentity = (0 until colorIdentityJson.length()).map {colorIdentityJson.getString(it)}
+            val colorIdentity = (0 until colorIdentityJson.length()).map { colorIdentityJson.getString(it) }
             // types
             val typesJson = currentCardElement.optJSONArray("types") ?: JSONArray()
             val types = (0 until typesJson.length()).map { typesJson.getString(it) }
             // subtypes
             val subtypesJson = currentCardElement.optJSONArray("subtypes") ?: JSONArray()
-            val subtypes = (0 until subtypesJson.length()).map {subtypesJson.getString(it)}
+            val subtypes = (0 until subtypesJson.length()).map { subtypesJson.getString(it) }
             // variations
             val variationsJson = currentCardElement.optJSONArray("variations") ?: JSONArray()
             val variations = (0 until variationsJson.length()).map { variationsJson.getString(it) }
@@ -60,7 +61,15 @@ class HttpConnector {
                 val foreignImageUrl = foreignNameJson.optString("imageUrl", "")
                 val foreignLanguage = foreignNameJson.getString("language")
                 val foreignMultiverseid = foreignNameJson.optString("multiverseid", "")
-                ForeignName(foreignName, foreignText, foreignType, foreignFlavor, foreignImageUrl, foreignLanguage, foreignMultiverseid)
+                ForeignName(
+                    foreignName,
+                    foreignText,
+                    foreignType,
+                    foreignFlavor,
+                    foreignImageUrl,
+                    foreignLanguage,
+                    foreignMultiverseid
+                )
             }
             // printings
             val printingsJson = currentCardElement.optJSONArray("printings") ?: JSONArray()
@@ -70,7 +79,7 @@ class HttpConnector {
             }
             // legalities
             val legalitiesJson = currentCardElement.optJSONArray("legalities") ?: JSONArray()
-            val legalities  = (0 until legalitiesJson.length()).map{
+            val legalities = (0 until legalitiesJson.length()).map {
                 val legalityJson = legalitiesJson.getJSONObject(it)
                 val format = legalityJson.getString("format")
                 val legality = legalityJson.optString("legality", "")
@@ -105,7 +114,7 @@ class HttpConnector {
                 currentCardElement.optString("originalType", ""),
                 legalities,
                 currentCardElement.optString("id", ""),
-                )
+            )
             currentCards.add(card)
         }
         return currentCards
