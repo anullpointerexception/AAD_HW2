@@ -32,38 +32,42 @@ class MainActivity : AppCompatActivity() {
             }
             withContext(Dispatchers.Main){
                 val string = StringBuilder()
-                for(card in result) {
-                    val objectProperties =
-                                        "Name: " + card.name + " , " +
-                                        "manaCost: " + card.manaCost + " , " +
-                                        "cmc: " + card.cmc + " , " +
-                                        "colors: " + card.colors + " , " +
-                                        "colorIdentity: " + card.colorIdentity + " , " +
-                                        "type: " + card.type + " , " +
-                                        "types: " + card.types + " , " +
-                                        "subtypes: " + card.subtypes + " , " +
-                                        "rarity: " + card.rarity + " , " +
-                                        "set: " + card.set + " , " +
-                                        "setName: " + card.setName + " , " +
-                                        "text: " + card.text + " , " +
-                                        "artist: " + card.artist + " , " +
-                                        "number: " + card.number + " , " +
-                                        "power: " + card.power + " , " +
-                                        "toughness: " + card.toughness + " , " +
-                                        "layout: " + card.layout + " , " +
-                                        "multiverseid: " + card.multiverseid + " , " +
-                                        "imageUrl: " + card.imageUrl + " , " +
-                                        "variations: " + card.variations + " , " +
-                                        "foreignNames: " + card.foreignNames + " , " +
-                                        "printings: " + card.printings + " , " +
-                                        "originalText: " + card.originalText + " , " +
-                                        "originalType: " + card.originalType + " , " +
-                                        "legalities: " + card.legalities + " , " +
-                                        "id: " + card.id+ "\n"
-                    string.append(objectProperties)
+                if(result.isEmpty()){
+                    findViewById<TextView>(R.id.dataTextView).text = "Error"
+                } else {
+                    for (card in result) {
+                        val objectProperties =
+                            "Name: " + card.name + " , " +
+                                    "manaCost: " + card.manaCost + " , " +
+                                    "cmc: " + card.cmc + " , " +
+                                    "colors: " + card.colors + " , " +
+                                    "colorIdentity: " + card.colorIdentity + " , " +
+                                    "type: " + card.type + " , " +
+                                    "types: " + card.types + " , " +
+                                    "subtypes: " + card.subtypes + " , " +
+                                    "rarity: " + card.rarity + " , " +
+                                    "set: " + card.set + " , " +
+                                    "setName: " + card.setName + " , " +
+                                    "text: " + card.text + " , " +
+                                    "artist: " + card.artist + " , " +
+                                    "number: " + card.number + " , " +
+                                    "power: " + card.power + " , " +
+                                    "toughness: " + card.toughness + " , " +
+                                    "layout: " + card.layout + " , " +
+                                    "multiverseid: " + card.multiverseid + " , " +
+                                    "imageUrl: " + card.imageUrl + " , " +
+                                    "variations: " + card.variations + " , " +
+                                    "foreignNames: " + card.foreignNames + " , " +
+                                    "printings: " + card.printings + " , " +
+                                    "originalText: " + card.originalText + " , " +
+                                    "originalType: " + card.originalType + " , " +
+                                    "legalities: " + card.legalities + " , " +
+                                    "id: " + card.id + "\n"
+                        string.append(objectProperties)
+                    }
+                    findViewById<TextView>(R.id.dataTextView).text = string
+                    page++
                 }
-                findViewById<TextView>(R.id.dataTextView).text = string
-                page++
                 loadButton.isEnabled = true
                 loadButton.alpha = 1.0f
             }

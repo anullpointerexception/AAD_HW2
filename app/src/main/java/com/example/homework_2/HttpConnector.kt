@@ -2,6 +2,7 @@ package com.example.homework_2
 
 import com.example.homework_2.models.Card
 import com.example.homework_2.models.ForeignName
+import com.example.homework_2.models.Legalities
 import com.google.gson.Gson
 import com.google.gson.JsonArray
 import com.google.gson.JsonObject
@@ -17,45 +18,41 @@ class HttpConnector {
 
         val url = URL("https://api.magicthegathering.io/v1/cards?page=$page")
         val connection = url.openConnection() as HttpURLConnection
-        val result = try{
+        var result = ""
+        try{
             connection.run{
                 requestMethod = "GET"
                 readTimeout = 10000
-                String(inputStream.readBytes())
+                result = String(inputStream.readBytes())
             }
-        } finally {
+        }
+        catch (e: Exception) {
+            result = "text"
+        }finally {
             connection.disconnect()
         }
-        // println(result)
         val jsonObject = JSONObject(result)
 
-
-        // val gson = Gson()
-        // val jsonObject = gson.fromJson(result, JsonObject::class.java)
         val cardJsonArray = jsonObject.getJSONArray("cards")
         val currentCards = mutableListOf<Card>()
         for(i in 0 until cardJsonArray.length()){
             val currentCardElement = cardJsonArray.getJSONObject(i)
-
-            val name = currentCardElement.getString("name")
-            val manaCost = currentCardElement.optString("manaCost", "")
-
-
+            // colors
             val colorsJson =currentCardElement.optJSONArray("colors") ?: JSONArray()
             val colors = (0 until colorsJson.length()).map {colorsJson.getString(it)}
-
+            // colorIdentity
             val colorIdentityJson = currentCardElement.optJSONArray("colorIdentity") ?: JSONArray()
             val colorIdentity = (0 until colorIdentityJson.length()).map {colorIdentityJson.getString(it)}
-
+            // types
             val typesJson = currentCardElement.optJSONArray("types") ?: JSONArray()
             val types = (0 until typesJson.length()).map { typesJson.getString(it) }
-
+            // subtypes
             val subtypesJson = currentCardElement.optJSONArray("subtypes") ?: JSONArray()
             val subtypes = (0 until subtypesJson.length()).map {subtypesJson.getString(it)}
-
+            // variations
             val variationsJson = currentCardElement.optJSONArray("variations") ?: JSONArray()
             val variations = (0 until variationsJson.length()).map { variationsJson.getString(it) }
-
+            // foreignNames
             val foreignNamesJson = currentCardElement.optJSONArray("foreignNames") ?: JSONArray()
             val foreignNames = (0 until foreignNamesJson.length()).map {
                 val foreignNameJson = foreignNamesJson.getJSONObject(it)
@@ -68,41 +65,49 @@ class HttpConnector {
                 val foreignMultiverseid = foreignNameJson.optString("multiverseid", "")
                 ForeignName(foreignName, foreignText, foreignType, foreignFlavor, foreignImageUrl, foreignLanguage, foreignMultiverseid)
             }
-
+            // printings
             val printingsJson = currentCardElement.optJSONArray("printings") ?: JSONArray()
             val printingsList = mutableListOf<String>()
             for (i in 0 until printingsJson.length()) {
                 printingsList.add(printingsJson.getString(i))
             }
+            // legalities
+            val legalitiesJson = currentCardElement.optJSONArray("legalities") ?: JSONArray()
+            val legalities  = (0 until legalitiesJson.length()).map{
+                val legalityJson = legalitiesJson.getJSONObject(it)
+                val format = legalityJson.getString("format")
+                val legality = legalityJson.optString("legality", "")
+                Legalities(format, legality)
+            }
 
 
             val card = Card(
-                currentCardElement.getString("name"),
-                currentCardElement.getString("manaCost"),
+                currentCardElement.optString("name", ""),
+                currentCardElement.optString("manaCost", ""),
                 currentCardElement.getLong("cmc"),
-                currentCardElement.getJSONArray("colors"),
-                currentCardElement.getJSONArray("colorIdentity"),
-                currentCardElement.getString("type"),
-                currentCardElement.getJSONArray("types"),
-                currentCardElement.getJSONArray("subtypes"),
-                currentCardElement.getString("rarity"),
-                currentCardElement.getString("set"),
-                currentCardElement.getString("setName"),
-                currentCardElement.getString("text"),
-                currentCardElement.getString("artist"),
-                currentCardElement.getString("number"),
+                colors,
+                colorIdentity,
+                currentCardElement.optString("type", ""),
+                types,
+                subtypes,
+                currentCardElement.optString("rarity", ""),
+                currentCardElement.optString("set", ""),
+                currentCardElement.optString("setName", ""),
+                currentCardElement.optString("text", ""),
+                currentCardElement.optString("artist", ""),
+                currentCardElement.optString("number", ""),
                 currentCardElement.optString("power", ""),
-                currentCardElement.getString("toughness"),
-                currentCardElement.getString("layout"),
+                currentCardElement.optString("toughness", ""),
+                currentCardElement.optString("layout", ""),
                 currentCardElement.optString("multiverseid", ""),
                 currentCardElement.optString("imageUrl", ""),
-                currentCardElement.getJSONArray("variations"),
-                currentCardElement.getJSONArray("foreignNames"),
-                currentCardElement.getJSONArray("printings"),
-                currentCardElement.getString("originalText"),
-                currentCardElement.getString("originalType"),
-                currentCardElement.getJSONArray("legalities"),
-                currentCardElement.getString("id"),
+                variations,
+                foreignNames,
+                printingsList,
+                currentCardElement.optString("originalText", ""),
+                currentCardElement.optString("originalType", ""),
+                legalities,
+                currentCardElement.optString("id", ""),
                 )
             currentCards.add(card)
         }
