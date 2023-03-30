@@ -19,7 +19,7 @@ class HttpConnector {
         try{
             connection.run{
                 requestMethod = "GET"
-                readTimeout = 10000
+                readTimeout = 5000
                 result = String(inputStream.readBytes())
             }
         }
@@ -74,8 +74,8 @@ class HttpConnector {
             // printings
             val printingsJson = currentCardElement.optJSONArray("printings") ?: JSONArray()
             val printingsList = mutableListOf<String>()
-            for (i in 0 until printingsJson.length()) {
-                printingsList.add(printingsJson.getString(i))
+            for (s in 0 until printingsJson.length()) {
+                printingsList.add(printingsJson.getString(s))
             }
             // legalities
             val legalitiesJson = currentCardElement.optJSONArray("legalities") ?: JSONArray()
@@ -116,6 +116,7 @@ class HttpConnector {
                 currentCardElement.optString("id", ""),
             )
             currentCards.add(card)
+            currentCards.sortWith(compareBy{it.name})
         }
         return currentCards
     }
