@@ -54,12 +54,12 @@ class HttpConnector {
             val foreignNamesJson = currentCardElement.optJSONArray("foreignNames") ?: JSONArray()
             val foreignNames = (0 until foreignNamesJson.length()).map {
                 val foreignNameJson = foreignNamesJson.getJSONObject(it)
-                val foreignName = foreignNameJson.getString("name")
+                val foreignName = foreignNameJson.optString("name")
                 val foreignText = foreignNameJson.optString("text", "")
                 val foreignType = foreignNameJson.optString("type", "")
                 val foreignFlavor = foreignNameJson.optString("flavor", "")
                 val foreignImageUrl = foreignNameJson.optString("imageUrl", "")
-                val foreignLanguage = foreignNameJson.getString("language")
+                val foreignLanguage = foreignNameJson.optString("language")
                 val foreignMultiverseid = foreignNameJson.optString("multiverseid", "")
                 ForeignName(
                     foreignName,
@@ -81,7 +81,7 @@ class HttpConnector {
             val legalitiesJson = currentCardElement.optJSONArray("legalities") ?: JSONArray()
             val legalities = (0 until legalitiesJson.length()).map {
                 val legalityJson = legalitiesJson.getJSONObject(it)
-                val format = legalityJson.getString("format")
+                val format = legalityJson.optString("format")
                 val legality = legalityJson.optString("legality", "")
                 Legalities(format, legality)
             }
@@ -90,7 +90,7 @@ class HttpConnector {
             val card = Card(
                 currentCardElement.optString("name", ""),
                 currentCardElement.optString("manaCost", ""),
-                currentCardElement.getLong("cmc"),
+                currentCardElement.optLong("cmc"),
                 colors,
                 colorIdentity,
                 currentCardElement.optString("type", ""),

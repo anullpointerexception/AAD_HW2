@@ -81,13 +81,12 @@ class MainActivity : AppCompatActivity() {
                 loadButton.alpha = 1.0f
             }
         }
-
-        // connection.loadCardData(page)
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putString("text", string.toString())
+        outState.putInt("page", page)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
